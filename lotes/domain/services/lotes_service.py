@@ -1,26 +1,29 @@
-from lotes.domain.repository.processes_repository import ProcessesRepository
-from lotes.domain.entities.process_entity import ProcessEntity
-from typing import List, Optional
+
+from lotes.domain import ProcessesRepository, ProcessEntity
 
 class LotesService:
     
     def __init__(self, processesRepository:ProcessesRepository ):
         self.processesRepository = processesRepository
 
-
-    def get_process_by_id(self, id: int) -> Optional[ProcessEntity]:
+    def get_process_by_id(self, id: int):
         return self.processesRepository.get_process_by_id(id)
 
-    def get_all_processes(self) -> List[ProcessEntity]:
+    def get_all_processes(self):
         return self.processesRepository.get_all_processes()
     
-    def create_process(self, data:dict)  -> ProcessEntity:
+    def get_finished_processes(self):
+        return self.processesRepository.get_finished_processes()
+    
+    def create_process(self, data:dict):
 
         process_data = {
             "id": int(data["id"]),
-            "name": data["name"],
+            # "name": data["name"],
             "operation": data["operation"],
-            "TEM": int(data["TEM"])
+            "TEM": int(data["TEM"]),
+            "elapsdT": int(data["elapsdT"]),
+            "is_finished": bool(data["is_finished"])
         }
 
         process = ProcessEntity.process_from_dict(process_data)

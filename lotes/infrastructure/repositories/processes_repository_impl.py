@@ -27,3 +27,5 @@ class ProcessRepositoryImpl(ProcessesRepository):
     def get_processes_in_lotes(self, size_of_lotes:int ) -> List[List[ProcessEntity]]:
         return self.processesDatasource.get_processes_in_lotes(size_of_lotes)
         
+    def clean_processes(self):
+        self.processesDatasource.clean_processes()

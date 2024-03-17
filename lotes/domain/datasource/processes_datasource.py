@@ -18,9 +18,5 @@ class ProcessesDatasource(ABC):
         pass
 
     @abstractmethod
-    def get_finished_processes() -> List[ProcessEntity]:
-        pass
-
-    @abstractmethod
     def get_processes_in_lotes(self, size_of_lotes:int ) -> List[List[ProcessEntity]]:
         pass
