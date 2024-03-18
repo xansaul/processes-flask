@@ -42,9 +42,20 @@ def get_processes():
 
     processes = lotes_service.get_all_processes()
 
-    return jsonify([
+    processes_response = [
         process.process_to_dict() for process in processes
-    ])
+    ]
+
+    for process in processes_response:
+        process.update({
+            "time_blocked": 0,
+            "addedToReadyForFirstTime": False,
+            "addedToRunningProcessForFirstTime": False,
+            "remaining_time_running": process["TEM"]
+        })
+
+
+    return jsonify(processes_response)
 
 
 def __create_processes(number_of_process: int):

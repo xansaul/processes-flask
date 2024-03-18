@@ -8,10 +8,12 @@ class ProcessEntity:
             elapsdT:int, 
             is_finished:bool=False , 
             time_finished:int = 0,
-            is_blocked:bool = False, 
             remaining_time_blocked:int = 0,
             initial_time: int = 0,
             response_time: int = 0,
+            wait_time: int = 0,
+            service_time: int = 0,
+            return_time: int = 0,
             ):
         self.id = id
         self.operation = operation
@@ -19,11 +21,12 @@ class ProcessEntity:
         self.elapsdT = elapsdT
         self.is_finished = is_finished
         self.time_finished = time_finished
-        self.is_blocked = is_blocked
         self.remaining_time_blocked = remaining_time_blocked
         self.initial_time = initial_time
         self.response_time = response_time
-        
+        self.wait_time = wait_time
+        self.service_time = service_time
+        self.return_time = return_time
         
 
     @classmethod
@@ -31,22 +34,9 @@ class ProcessEntity:
         return cls(data["id"], data["operation"], data["TEM"], data["elapsdT"])
 
     def process_to_dict(self):
-        return {
-            "id":self.id,
-            "operation":self.operation,
-            "TEM": self.TEM,
-            "elapsdT": self.elapsdT,
-            "is_finished": self.is_finished,
-            "time_finished": self.time_finished,
-            "is_blocked": self.is_blocked,
-            "remaining_time_blocked": self.remaining_time_blocked,
-            "initial_time": self.initial_time,
-            "response_time": self.response_time,
-            "remaining_time_running": self.TEM
-        }
-
-    
-
+        attributes = vars(self)  
+        return {key: value for key, value in attributes.items()}
+            
 
     def __str__(self):
         return f"(id: {self.id} operation: {self.operation} TEM: {self.TEM})"
