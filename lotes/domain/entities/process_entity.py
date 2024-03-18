@@ -11,7 +11,7 @@ class ProcessEntity:
             is_blocked:bool = False, 
             remaining_time_blocked:int = 0,
             initial_time: int = 0,
-            response_time: int = 0
+            response_time: int = 0,
             ):
         self.id = id
         self.operation = operation
@@ -23,6 +23,7 @@ class ProcessEntity:
         self.remaining_time_blocked = remaining_time_blocked
         self.initial_time = initial_time
         self.response_time = response_time
+        
         
 
     @classmethod
@@ -40,7 +41,8 @@ class ProcessEntity:
             "is_blocked": self.is_blocked,
             "remaining_time_blocked": self.remaining_time_blocked,
             "initial_time": self.initial_time,
-            "response_time": self.response_time
+            "response_time": self.response_time,
+            "remaining_time_running": self.TEM
         }
 
     
