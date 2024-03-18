@@ -54,7 +54,7 @@ def __create_processes(number_of_process: int):
             "id": i,
             "name": "",
             "operation": "",
-            "TEM": random.randint(5, 7),
+            "TEM": random.randint(5, 18),
             "elapsdT": 0,
             "is_finished": False
         }
