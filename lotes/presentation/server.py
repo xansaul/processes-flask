@@ -2,11 +2,10 @@ from flask import Flask, request
 from flask.json import jsonify
 from flask_cors import CORS
 
-import random
-import re
+import ast
 
 from lotes import ProcessRepositoryImpl, LotesService, ArrayProcessesDatasource
-
+from lotes.presentation.helpers import validate_array_ids
 
 process_repository = ProcessRepositoryImpl(
     ArrayProcessesDatasource()
@@ -16,81 +15,36 @@ lotes_service = LotesService(
     process_repository
 )
 
-
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/")
 def get_processes():
-
-
     process_repository.clean_processes()
 
     no_processes = request.args.get('noProcesses')
 
-    if not no_processes:
-        return jsonify({
-            "error": "missing parameter 'noProcesses'"
-        })
+    if not no_processes or not no_processes.isdigit():
+        return jsonify({"error": "noProcesses must be a positive integer"})
 
-    if not no_processes.isdigit():
-        return jsonify({
-            "error": "noProcesses must be a number"
-        })
-    
-    __create_processes(int(no_processes))
+    no_processes = int(no_processes)
 
-    processes = lotes_service.get_all_processes()
+    processes_ids = request.args.get('ids')
 
-    processes_response = [
-        process.process_to_dict() for process in processes
-    ]
+    if processes_ids:
+        try:
+            ids_array = ast.literal_eval(processes_ids)
+            validate_array_ids(ids_array, no_processes)
 
-    for process in processes_response:
-        process.update({
-            "time_blocked": 0,
-            "addedToReadyForFirstTime": False,
-            "addedToRunningProcessForFirstTime": False,
-            "remaining_time_running": process["TEM"]
-        })
+            lotes_service.create_processes_with_array_ids(no_processes, ids_array)
+        except Exception as e:
+            return jsonify({
+                "error": str(e)
+            })
+    else:
+        lotes_service.create_processes_with_id_auto_generated(no_processes)
 
-
-    return jsonify(processes_response)
-
-
-def __create_processes(number_of_process: int):
-
-    for i in range(1,number_of_process+1):
-        data = {
-            "id": i,
-            "name": "",
-            "operation": "",
-            "TEM": random.randint(5, 18),
-            "elapsdT": 0,
-            "is_finished": False
-        }
-        
-        is_valid_operation = __validate_operation(data["operation"])
-        while not is_valid_operation:
-            data["operation"] = __generate_operation()
-            is_valid_operation = __validate_operation(data["operation"])
-
-        lotes_service.create_process(data)
-
-
-def __validate_operation(operation):
-    try:
-        if re.match('^-?\d+[+*/%-]-?\d+$', operation) and '/0' not in operation and '%0' not in operation:
-            return True
-    except:
-        return False
-
-
-
-def __generate_operation():
-    symbols = ['+', '-', '/', '*', '%']
-    operation = str(random.randint(0, 100))+random.choice(symbols)+str(random.randint(0, 100))
-
-    return operation
+    return lotes_service.get_processes_json_format()
 
 
