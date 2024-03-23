@@ -1,3 +1,4 @@
+import uuid
 from flask.json import jsonify
 
 from lotes.domain import ProcessesRepository, ProcessEntity
@@ -34,9 +35,9 @@ class LotesService:
         return self.processesRepository.get_processes_in_lotes(size_of_lotes)
 
     def create_processes_with_id_auto_generated(self, number_of_process):
-        for i in range(1, number_of_process + 1):
+        for i in range(0, number_of_process):
             data = {
-                "id": i,
+                "id": uuid.uuid4(),
                 "name": "",
                 "operation": "",
                 "TEM": random.randint(5, 18),
