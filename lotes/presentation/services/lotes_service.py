@@ -80,7 +80,7 @@ class LotesService:
                 "addedToReadyForFirstTime": False,
                 "addedToRunningProcessForFirstTime": False,
                 "remaining_time_running": process["TEM"],
-                "state": "queue"
+                "state": "new"
             })
 
         return jsonify(processes_response)
